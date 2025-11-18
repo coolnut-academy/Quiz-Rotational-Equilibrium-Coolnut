@@ -21,27 +21,27 @@
     <!-- โหลด Tone.js สำหรับเสียง -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <style>
-        /* Cyberpunk Theme - Light Background with Neon Accents */
+        /* Refined modern palette */
         :root {
-            --cyber-bg-light: #f0f4ff;
+            --cyber-bg-light: #f8f4ed;
             --cyber-bg-lighter: #ffffff;
             --cyber-bg-card: #ffffff;
-            --cyber-purple: #6a00ff;
-            --cyber-pink: #d500ff;
-            --cyber-cyan: #0099cc;
-            --cyber-green: #00cc66;
-            --cyber-blue: #0066ff;
-            --cyber-yellow: #ffaa00;
-            --cyber-red: #ff3366;
-            --cyber-text: #1a1a2e;
-            --cyber-text-dim: #4a5568;
-            --cyber-text-bright: #000000;
+            --cyber-purple: #1f2a44;
+            --cyber-pink: #c08c72;
+            --cyber-cyan: #8fa1b7;
+            --cyber-green: #6f8775;
+            --cyber-blue: #2f3e5c;
+            --cyber-yellow: #d4b483;
+            --cyber-red: #b46c63;
+            --cyber-text: #1f1f1f;
+            --cyber-text-dim: #6b7280;
+            --cyber-text-bright: #2b2b2b;
         }
         
         /* ใช้ฟอนต์ Inter */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #e8f0ff 0%, #f0f4ff 50%, #fff5ff 100%);
+            background: linear-gradient(135deg, #fbf9f4 0%, #f3ede5 50%, #efe7de 100%);
             color: var(--cyber-text);
             position: relative;
             overflow-x: hidden;
@@ -56,11 +56,11 @@
             width: 100%;
             height: 100%;
             background: 
-                linear-gradient(90deg, transparent 79px, rgba(106, 0, 255, 0.08) 81px, rgba(106, 0, 255, 0.08) 82px, transparent 84px),
-                linear-gradient(0deg, transparent 79px, rgba(0, 153, 204, 0.08) 81px, rgba(0, 153, 204, 0.08) 82px, transparent 84px),
-                radial-gradient(circle at 20% 50%, rgba(106, 0, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(0, 153, 204, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(213, 0, 255, 0.08) 0%, transparent 50%);
+                linear-gradient(90deg, transparent 79px, rgba(31, 42, 68, 0.05) 81px, rgba(31, 42, 68, 0.05) 82px, transparent 84px),
+                linear-gradient(0deg, transparent 79px, rgba(212, 180, 131, 0.05) 81px, rgba(212, 180, 131, 0.05) 82px, transparent 84px),
+                radial-gradient(circle at 20% 50%, rgba(31, 42, 68, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(192, 140, 114, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 40% 20%, rgba(143, 161, 183, 0.08) 0%, transparent 45%);
             background-size: 100px 100px, 100px 100px, 100% 100%, 100% 100%, 100% 100%;
             animation: gridMove 20s linear infinite;
             pointer-events: none;
@@ -81,12 +81,12 @@
             width: 100%;
             height: 100%;
             background-image: 
-                radial-gradient(2px 2px at 20% 30%, rgba(0, 153, 204, 0.3), transparent),
-                radial-gradient(2px 2px at 60% 70%, rgba(213, 0, 255, 0.3), transparent),
-                radial-gradient(1px 1px at 50% 50%, rgba(106, 0, 255, 0.2), transparent),
-                radial-gradient(1px 1px at 80% 10%, rgba(0, 204, 102, 0.3), transparent),
-                radial-gradient(2px 2px at 90% 40%, rgba(0, 153, 204, 0.3), transparent),
-                radial-gradient(1px 1px at 33% 60%, rgba(213, 0, 255, 0.2), transparent);
+                radial-gradient(2px 2px at 20% 30%, rgba(47, 62, 92, 0.2), transparent),
+                radial-gradient(2px 2px at 60% 70%, rgba(192, 140, 114, 0.2), transparent),
+                radial-gradient(1px 1px at 50% 50%, rgba(31, 42, 68, 0.15), transparent),
+                radial-gradient(1px 1px at 80% 10%, rgba(143, 161, 183, 0.2), transparent),
+                radial-gradient(2px 2px at 90% 40%, rgba(212, 180, 131, 0.2), transparent),
+                radial-gradient(1px 1px at 33% 60%, rgba(111, 135, 117, 0.2), transparent);
             background-repeat: repeat;
             background-size: 200px 200px;
             animation: sparkle 15s linear infinite;
@@ -100,31 +100,29 @@
             50% { opacity: 0.7; transform: translate(-50px, -50px); }
         }
         
-        /* Main container with cyberpunk glow - Light Theme */
+        /* Main container */
         .main-container {
             position: relative;
             z-index: 1;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 255, 0.95) 100%);
-            border: 3px solid var(--cyber-purple);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(249, 246, 240, 0.96) 100%);
+            border: 1px solid rgba(31, 42, 68, 0.12);
             box-shadow: 
-                0 0 30px rgba(106, 0, 255, 0.3),
-                0 0 60px rgba(106, 0, 255, 0.15),
-                0 8px 32px rgba(0, 0, 0, 0.1),
-                inset 0 0 20px rgba(0, 153, 204, 0.05);
+                0 15px 50px rgba(15, 23, 42, 0.12),
+                0 5px 18px rgba(15, 23, 42, 0.08);
         }
         
-        /* Neon text glow - Light Theme (darker colors for contrast) */
-        .neon-text {
-            text-shadow: 
-                0 0 8px currentColor,
-                0 0 16px currentColor,
-                2px 2px 4px rgba(0, 0, 0, 0.2);
+        .hero-image {
+            width: 100%;
+            max-width: 520px;
+            height: auto;
+            border-radius: 1.5rem;
+            object-fit: contain;
+            box-shadow:
+                0 20px 45px rgba(26, 42, 108, 0.18),
+                0 8px 18px rgba(15, 23, 42, 0.12);
+            background: #f4efe7;
+            padding: 0.5rem;
         }
-        
-        .neon-cyan { color: var(--cyber-cyan); font-weight: 700; }
-        .neon-pink { color: var(--cyber-pink); font-weight: 700; }
-        .neon-purple { color: var(--cyber-purple); font-weight: 700; }
-        .neon-green { color: var(--cyber-green); font-weight: 700; }
         
         /* ซ่อนส่วนต่างๆ ไว้ในตอนเริ่มต้น */
         .hidden-section {
@@ -152,15 +150,14 @@
         }
         
         .modal-content {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 255, 0.98) 100%);
-            border: 3px solid var(--cyber-cyan);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 246, 241, 0.98) 100%);
+            border: 1px solid rgba(31, 42, 68, 0.1);
             padding: 2rem;
             border-radius: 1rem;
             text-align: center;
             box-shadow: 
-                0 0 40px rgba(0, 153, 204, 0.4),
-                0 8px 32px rgba(0, 0, 0, 0.15),
-                inset 0 0 20px rgba(0, 153, 204, 0.1);
+                0 25px 50px rgba(15, 23, 42, 0.18),
+                0 10px 25px rgba(15, 23, 42, 0.1);
             width: 90%;
             max-width: 400px;
             animation: slideUp 0.3s ease-out;
@@ -171,22 +168,21 @@
         #timerBarContainer {
             width: 100%;
             height: 24px;
-            background: rgba(240, 244, 255, 0.8);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 14px;
             overflow: hidden;
-            border: 2px solid var(--cyber-cyan);
+            border: 1px solid rgba(31, 42, 68, 0.15);
             box-shadow: 
-                inset 0 2px 8px rgba(0, 0, 0, 0.1),
-                0 0 15px rgba(0, 153, 204, 0.3),
-                0 0 8px rgba(0, 153, 204, 0.2);
+                inset 0 2px 6px rgba(15, 23, 42, 0.07),
+                0 10px 20px rgba(15, 23, 42, 0.08);
         }
         
         #timerBar {
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, var(--cyber-green) 0%, var(--cyber-cyan) 100%);
+            background: linear-gradient(90deg, #d4b483 0%, #b08c5b 100%);
             transition: width 0.5s linear, background-color 0.5s ease;
-            box-shadow: 0 0 15px var(--cyber-green), inset 0 0 10px rgba(0, 204, 102, 0.3);
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
         }
         
         /* Loading state */
@@ -200,11 +196,9 @@
             max-width: 100%;
             height: auto;
             display: block;
-            border: 3px solid var(--cyber-purple);
-            box-shadow: 
-                0 0 25px rgba(106, 0, 255, 0.4),
-                0 4px 16px rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(31, 42, 68, 0.15);
+            box-shadow: 0 15px 30px rgba(15, 23, 42, 0.12);
+            background: rgba(255, 255, 255, 0.98);
         }
         
         /* Responsive improvements */
@@ -263,8 +257,8 @@
         .learning-content h3 {
             margin-top: 1.5rem;
             margin-bottom: 0.75rem;
-            color: var(--cyber-cyan);
-            text-shadow: 0 0 8px var(--cyber-cyan), 1px 1px 2px rgba(0, 0, 0, 0.1);
+            color: var(--cyber-text-bright);
+            text-shadow: none;
             font-weight: 700;
         }
         
@@ -274,22 +268,19 @@
         }
         
         .learning-content strong {
-            color: var(--cyber-pink);
-            text-shadow: 0 0 5px var(--cyber-pink);
+            color: var(--cyber-text-bright);
+            text-shadow: none;
             font-weight: 700;
         }
         
         .example-box {
-            background: linear-gradient(135deg, rgba(106, 0, 255, 0.15) 0%, rgba(213, 0, 255, 0.15) 100%);
-            border: 3px solid var(--cyber-pink);
+            background: linear-gradient(135deg, rgba(244, 239, 231, 0.9) 0%, rgba(236, 229, 218, 0.9) 100%);
+            border: 1px solid rgba(31, 42, 68, 0.08);
             color: var(--cyber-text-bright);
             padding: 1.5rem;
             border-radius: 0.75rem;
             margin: 1.5rem 0;
-            box-shadow: 
-                0 0 25px rgba(213, 0, 255, 0.3),
-                0 4px 16px rgba(0, 0, 0, 0.1),
-                inset 0 0 20px rgba(106, 0, 255, 0.1);
+            box-shadow: 0 20px 35px rgba(15, 23, 42, 0.08);
         }
         
         /* Cyberpunk buttons - Light Theme */
@@ -299,6 +290,7 @@
             transition: all 0.3s ease;
             color: white;
             font-weight: 600;
+            border-radius: 0.75rem;
         }
         
         .cyber-btn::before {
@@ -317,53 +309,35 @@
         }
         
         .cyber-btn-primary {
-            background: linear-gradient(135deg, var(--cyber-purple) 0%, var(--cyber-blue) 100%);
-            border: 3px solid var(--cyber-cyan);
-            box-shadow: 
-                0 0 20px rgba(0, 153, 204, 0.4),
-                0 4px 12px rgba(106, 0, 255, 0.3),
-                inset 0 0 15px rgba(106, 0, 255, 0.2);
+            background: linear-gradient(135deg, #1f2a44 0%, #2f3e5c 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 25px rgba(15, 23, 42, 0.25);
         }
         
         .cyber-btn-primary:hover {
-            box-shadow: 
-                0 0 30px rgba(0, 153, 204, 0.6),
-                0 6px 16px rgba(106, 0, 255, 0.4),
-                inset 0 0 20px rgba(106, 0, 255, 0.3);
+            box-shadow: 0 18px 30px rgba(15, 23, 42, 0.3);
             transform: translateY(-2px);
         }
         
         .cyber-btn-secondary {
-            background: linear-gradient(135deg, var(--cyber-pink) 0%, var(--cyber-purple) 100%);
-            border: 3px solid var(--cyber-pink);
-            box-shadow: 
-                0 0 20px rgba(213, 0, 255, 0.4),
-                0 4px 12px rgba(213, 0, 255, 0.3),
-                inset 0 0 15px rgba(213, 0, 255, 0.2);
+            background: linear-gradient(135deg, #d4b483 0%, #c08c72 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 25px rgba(192, 140, 114, 0.35);
         }
         
         .cyber-btn-secondary:hover {
-            box-shadow: 
-                0 0 30px rgba(213, 0, 255, 0.6),
-                0 6px 16px rgba(213, 0, 255, 0.4),
-                inset 0 0 20px rgba(213, 0, 255, 0.3);
+            box-shadow: 0 18px 32px rgba(192, 140, 114, 0.4);
             transform: translateY(-2px);
         }
         
         .cyber-btn-success {
-            background: linear-gradient(135deg, var(--cyber-green) 0%, var(--cyber-cyan) 100%);
-            border: 3px solid var(--cyber-green);
-            box-shadow: 
-                0 0 20px rgba(0, 204, 102, 0.4),
-                0 4px 12px rgba(0, 204, 102, 0.3),
-                inset 0 0 15px rgba(0, 204, 102, 0.2);
+            background: linear-gradient(135deg, #6f8775 0%, #4f6657 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 25px rgba(79, 102, 87, 0.35);
         }
         
         .cyber-btn-success:hover {
-            box-shadow: 
-                0 0 30px rgba(0, 204, 102, 0.6),
-                0 6px 16px rgba(0, 204, 102, 0.4),
-                inset 0 0 20px rgba(0, 204, 102, 0.3);
+            box-shadow: 0 18px 32px rgba(79, 102, 87, 0.4);
             transform: translateY(-2px);
         }
         
@@ -384,11 +358,10 @@
         
         .cyber-input:focus {
             background: rgba(255, 255, 255, 1);
-            border-color: var(--cyber-cyan);
+            border-color: var(--cyber-yellow);
             box-shadow: 
                 inset 0 2px 10px rgba(0, 0, 0, 0.08),
-                0 0 20px rgba(0, 153, 204, 0.4),
-                0 0 10px rgba(0, 153, 204, 0.3);
+                0 0 0 3px rgba(212, 180, 131, 0.3);
             outline: none;
             color: var(--cyber-text-bright);
         }
@@ -406,12 +379,9 @@
         
         /* Card backgrounds - Light Theme */
         .cyber-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 255, 0.9) 100%);
-            border: 2px solid var(--cyber-purple);
-            box-shadow: 
-                0 0 20px rgba(106, 0, 255, 0.25),
-                0 4px 16px rgba(0, 0, 0, 0.08),
-                inset 0 0 15px rgba(0, 153, 204, 0.05);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(247, 243, 236, 0.9) 100%);
+            border: 1px solid rgba(31, 42, 68, 0.08);
+            box-shadow: 0 15px 30px rgba(15, 23, 42, 0.08);
         }
         
         @media (max-width: 640px) {
@@ -441,9 +411,9 @@
         button:focus-visible,
         input:focus-visible,
         select:focus-visible {
-            outline: 3px solid var(--cyber-cyan);
+            outline: 3px solid rgba(212, 180, 131, 0.6);
             outline-offset: 2px;
-            box-shadow: 0 0 15px var(--cyber-cyan);
+            box-shadow: 0 0 0 3px rgba(212, 180, 131, 0.25);
         }
         
         /* Scrollbar - Cyberpunk Light */
@@ -453,18 +423,18 @@
         
         ::-webkit-scrollbar-track {
             background: var(--cyber-bg-light);
-            border-left: 2px solid var(--cyber-purple);
+            border-left: 1px solid rgba(31, 42, 68, 0.15);
         }
         
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, var(--cyber-purple), var(--cyber-cyan));
+            background: linear-gradient(180deg, #1f2a44, #c08c72);
             border-radius: 6px;
-            box-shadow: 0 0 8px rgba(106, 0, 255, 0.5), inset 0 0 5px rgba(0, 153, 204, 0.3);
+            box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.15);
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, var(--cyber-cyan), var(--cyber-pink));
-            box-shadow: 0 0 15px rgba(0, 153, 204, 0.8);
+            background: linear-gradient(180deg, #2f3e5c, #d4b483);
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -472,9 +442,18 @@
 
     <div class="max-w-4xl w-full mx-auto main-container p-3 sm:p-4 md:p-6 lg:p-8 rounded-xl sm:rounded-2xl my-2 sm:my-4 md:my-6 lg:my-8">
 
-        <h1 class="text-3xl sm:text-4xl font-bold text-center neon-text neon-cyan mb-6" style="color: var(--cyber-cyan);">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-slate-900 mb-6">
             เกมทดสอบ: สมดุลต่อการหมุน
         </h1>
+
+        <div class="w-full flex justify-center mb-2">
+            <img 
+                src="https://img5.pic.in.th/file/secure-sv1/Gemini_1.png" 
+                alt="ภาพประกอบสมดุลต่อการหมุน" 
+                class="hero-image">
+        </div>
+
+        <p class="text-center text-sm sm:text-base text-slate-500 mb-6">ผู้พัฒนาเกม: นายสาธิต ศิริวัชน์</p>
 
         <!-- 1. ส่วนสำหรับครู: สร้างโจทย์ -->
         <div id="setupSection" class="text-center" role="region" aria-label="ส่วนสร้างโจทย์">
@@ -497,24 +476,23 @@
         <div id="learningSection" class="hidden-section mt-6" role="region" aria-label="ส่วนเรียนรู้">
             <div class="pt-6" style="border-top: 2px solid var(--cyber-purple);">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl sm:text-3xl font-bold neon-text neon-cyan" style="color: var(--cyber-cyan);">เรียนรู้: สมดุลต่อการหมุน</h2>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">เรียนรู้: สมดุลต่อการหมุน</h2>
                     <button id="closeLearnBtn" 
-                            class="text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded transition-colors"
-                            aria-label="ปิดส่วนเรียนรู้"
-                            style="color: var(--cyber-cyan); text-shadow: 0 0 8px var(--cyber-cyan);">
+                            class="text-2xl font-bold text-slate-500 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded transition-colors"
+                            aria-label="ปิดส่วนเรียนรู้">
                         ×
                     </button>
                 </div>
                 
                 <div class="learning-content text-base sm:text-lg space-y-4">
                     <div>
-                        <h3 class="text-xl sm:text-2xl font-bold neon-text neon-cyan mb-3">📖 ความรู้พื้นฐาน</h3>
+                        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">📖 ความรู้พื้นฐาน</h3>
                         <p><strong>สมดุลต่อการหมุน (Rotational Equilibrium)</strong> คือสถานะที่วัตถุไม่หมุน หรือหมุนด้วยความเร็วเชิงมุมคงที่</p>
                         <p>สำหรับวัตถุที่จะอยู่ในสมดุลต่อการหมุน <strong>ผลรวมโมเมนต์ทิศทวนเข็มนาฬิกา ต้องเท่ากับ ผลรวมโมเมนต์ทิศตามเข็มนาฬิกา</strong></p>
                     </div>
                     
                     <div>
-                        <h3 class="text-xl sm:text-2xl font-bold neon-text neon-cyan mb-3">📐 สมการหลัก</h3>
+                        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">📐 สมการหลัก</h3>
                         <div class="cyber-card p-4 rounded-lg my-3">
                             <p class="mb-2"><strong>เงื่อนไขสมดุลต่อการหมุน:</strong></p>
                             <div class="text-center my-3">
@@ -537,12 +515,12 @@
                                 <li><strong>โมเมนต์ทวนเข็มนาฬิกา:</strong> โมเมนต์ที่ทำให้วัตถุหมุนทวนเข็มนาฬิกา (ค่าบวก)</li>
                                 <li><strong>โมเมนต์ตามเข็มนาฬิกา:</strong> โมเมนต์ที่ทำให้วัตถุหมุนตามเข็มนาฬิกา (ค่าบวก)</li>
                             </ul>
-                            <p class="text-sm mt-2" style="color: var(--cyber-text-dim); font-weight: 500;"><strong style="color: var(--cyber-pink);">หมายเหตุ:</strong> ทั้งสองทิศทางใช้ค่าบวกเสมอ แต่ต้องแยกเป็นสองฝั่งของสมการ</p>
+                            <p class="text-sm mt-2" style="color: var(--cyber-text-dim); font-weight: 500;"><strong>หมายเหตุ:</strong> ทั้งสองทิศทางใช้ค่าบวกเสมอ แต่ต้องแยกเป็นสองฝั่งของสมการ</p>
                         </div>
                     </div>
                     
                     <div>
-                        <h3 class="text-xl sm:text-2xl font-bold neon-text neon-cyan mb-3">💡 ตัวอย่างโจทย์</h3>
+                        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">💡 ตัวอย่างโจทย์</h3>
                         <div class="example-box">
                             <h4 class="text-lg sm:text-xl font-bold mb-3">โจทย์ตัวอย่าง:</h4>
                             <p class="mb-3">คานสม่ำเสมอยาว 60 เมตร มีจุดหมุน (Fulcrum) อยู่ที่ระยะ 30 เมตร</p>
@@ -595,7 +573,7 @@
                     </div>
                     
                     <div>
-                        <h3 class="text-xl sm:text-2xl font-bold neon-text neon-cyan mb-3">📝 สูตรที่ใช้ใน Quiz</h3>
+                        <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">📝 สูตรที่ใช้ใน Quiz</h3>
                         <div class="cyber-card p-4 rounded-lg my-3" style="border-color: var(--cyber-blue); box-shadow: 0 0 15px rgba(0, 102, 255, 0.3), inset 0 0 10px rgba(0, 102, 255, 0.1);">
                             <p class="mb-2">สำหรับโจทย์ใน Quiz นี้:</p>
                             <div class="space-y-2 text-sm sm:text-base" style="color: var(--cyber-text-bright); font-weight: 500;">
@@ -611,7 +589,7 @@
                     </div>
                     
                     <div class="cyber-card p-4 rounded my-4" style="border-color: var(--cyber-yellow); box-shadow: 0 0 15px rgba(255, 215, 0, 0.3), inset 0 0 10px rgba(255, 215, 0, 0.1); border-left-width: 4px;">
-                        <p class="text-sm sm:text-base" style="color: var(--cyber-text-bright); font-weight: 500;"><strong style="color: var(--cyber-yellow); font-weight: 700;">💡 เคล็ดลับ:</strong> ระลึกเสมอว่า <strong style="color: var(--cyber-purple); font-weight: 700;">ผลรวมโมเมนต์ทิศทวนเข็มนาฬิกา = ผลรวมโมเมนต์ทิศตามเข็มนาฬิกา</strong> ทั้งสองฝั่งใช้ค่าบวกเสมอ แต่ต้องแยกเป็นสองฝั่งของสมการ</p>
+                        <p class="text-sm sm:text-base" style="color: var(--cyber-text-bright); font-weight: 500;"><strong>💡 เคล็ดลับ:</strong> ระลึกเสมอว่า <strong>ผลรวมโมเมนต์ทิศทวนเข็มนาฬิกา = ผลรวมโมเมนต์ทิศตามเข็มนาฬิกา</strong> ทั้งสองฝั่งใช้ค่าบวกเสมอ แต่ต้องแยกเป็นสองฝั่งของสมการ</p>
                     </div>
                 </div>
             </div>
@@ -648,8 +626,8 @@
 
                 <!-- หน้าปัดเวลา -->
                 <div id="timer" 
-                     class="text-2xl sm:text-3xl md:text-4xl font-bold neon-text text-center my-2"
-                     style="color: var(--cyber-cyan);" 
+                     class="text-2xl sm:text-3xl md:text-4xl font-bold text-center my-2 text-slate-900"
+                     style="color: var(--cyber-text-bright);" 
                      role="timer" 
                      aria-live="polite" 
                      aria-atomic="true">
@@ -670,14 +648,14 @@
                     </button>
                     <button id="stopTimerBtn" 
                             class="cyber-btn w-full sm:w-auto text-white py-2 px-4 sm:px-5 rounded-lg text-sm sm:text-base font-semibold transition duration-300 focus:outline-none"
-                            style="background: linear-gradient(135deg, var(--cyber-yellow) 0%, #ff8800 100%); border: 3px solid var(--cyber-yellow); box-shadow: 0 0 20px rgba(255, 170, 0, 0.5), 0 4px 12px rgba(255, 170, 0, 0.3), inset 0 0 15px rgba(255, 170, 0, 0.2);"
+                            style="background: linear-gradient(135deg, #e7dcc9 0%, #c7af8a 100%); border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 12px 25px rgba(199, 175, 138, 0.35);"
                             disabled
                             aria-label="หยุดเวลา">
                         หยุดเวลา
                     </button>
                     <button id="resetTimerBtn" 
                             class="cyber-btn w-full sm:w-auto text-white py-2 px-4 sm:px-5 rounded-lg text-sm sm:text-base font-semibold transition duration-300 focus:outline-none"
-                            style="background: linear-gradient(135deg, var(--cyber-red) 0%, #cc0033 100%); border: 3px solid var(--cyber-red); box-shadow: 0 0 20px rgba(255, 51, 102, 0.5), 0 4px 12px rgba(255, 51, 102, 0.3), inset 0 0 15px rgba(255, 51, 102, 0.2);"
+                            style="background: linear-gradient(135deg, #c08c72 0%, #a46d57 100%); border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 12px 25px rgba(164, 109, 87, 0.35);"
                             aria-label="รีเซ็ตเวลา">
                         รีเซ็ต
                     </button>
@@ -706,7 +684,7 @@
 
         <!-- 3. ส่วนสำหรับนักเรียน -->
         <div id="quizSection" class="hidden-section mt-4 sm:mt-6 border-t pt-4 sm:pt-6" role="region" aria-label="ส่วนสำหรับนักเรียน" style="border-color: var(--cyber-purple);">
-            <h2 class="text-xl sm:text-2xl font-bold neon-text mb-3 sm:mb-4" style="color: var(--cyber-pink);">สำหรับนักเรียน</h2>
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3 sm:mb-4">สำหรับนักเรียน</h2>
             <form id="quizForm" onsubmit="event.preventDefault(); handleSubmit();" aria-label="แบบฟอร์มส่งคำตอบ">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                     <div>
@@ -748,7 +726,7 @@
 
         <!-- 4. ส่วนสำหรับครู: เฉลย (ซ่อนไว้) -->
         <div id="solutionSection" class="hidden-section mt-4 sm:mt-6 border-t pt-4 sm:pt-6" role="region" aria-label="ส่วนเฉลยสำหรับครู" style="border-color: var(--cyber-purple);">
-            <h2 class="text-xl sm:text-2xl font-bold neon-text mb-3 sm:mb-4" style="color: var(--cyber-purple);">สำหรับครู (เฉลย)</h2>
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3 sm:mb-4">สำหรับครู (เฉลย)</h2>
             <div class="mb-4">
                 <label for="studentCount" class="block text-sm font-medium mb-1" style="color: var(--cyber-text-bright); font-weight: 600;">
                     เลือกจำนวนนักเรียน (1-5 คน):
@@ -775,7 +753,7 @@
             </button>
 
             <div id="solutionDisplay" class="mt-4 cyber-card p-4 rounded-lg" role="region" aria-live="polite">
-                <h3 class="font-semibold mb-2" style="color: var(--cyber-cyan); font-weight: 700;">ผลลัพธ์:</h3>
+                <h3 class="font-semibold mb-2 text-slate-900">ผลลัพธ์:</h3>
                 <ul id="solutionList" class="list-disc list-inside space-y-1" style="color: var(--cyber-text-bright);">
                     <!-- เนื้อหาเฉลยจะถูกเติมโดย JavaScript -->
                 </ul>
@@ -793,10 +771,10 @@
          aria-live="assertive"
          aria-hidden="true">
         <div class="modal-content">
-            <svg class="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="color: var(--cyber-red); filter: drop-shadow(0 0 12px var(--cyber-red));">
+            <svg class="w-20 h-20 mx-auto text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <h2 id="timeUpTitle" class="text-3xl font-bold neon-text mt-4 mb-2" style="color: var(--cyber-red); text-shadow: 0 0 15px var(--cyber-red), 1px 1px 2px rgba(0, 0, 0, 0.2);">หมดเวลา!</h2>
+            <h2 id="timeUpTitle" class="text-3xl font-bold text-red-600 mt-4 mb-2">หมดเวลา!</h2>
             <p class="text-lg" style="color: var(--cyber-text-bright); font-weight: 500;">หมดเวลาการทำแบบทดสอบแล้ว</p>
             <button data-close-modal="timeUpModal" 
                     class="cyber-btn cyber-btn-primary mt-6 text-white py-2 px-6 rounded-lg font-semibold transition duration-300 focus:outline-none"
@@ -814,11 +792,11 @@
          aria-modal="true"
          aria-live="polite"
          aria-hidden="true">
-        <div class="modal-content" style="border-color: var(--cyber-green); box-shadow: 0 0 40px rgba(0, 204, 102, 0.4), 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(0, 204, 102, 0.1);">
-            <svg class="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="color: var(--cyber-green); filter: drop-shadow(0 0 12px var(--cyber-green));">
+        <div class="modal-content">
+            <svg class="w-20 h-20 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <h2 id="correctTitle" class="text-3xl font-bold neon-text mt-4 mb-2" style="color: var(--cyber-green); text-shadow: 0 0 15px var(--cyber-green), 1px 1px 2px rgba(0, 0, 0, 0.2);">ถูกต้อง!</h2>
+            <h2 id="correctTitle" class="text-3xl font-bold text-green-600 mt-4 mb-2">ถูกต้อง!</h2>
             <p class="text-lg" style="color: var(--cyber-text-bright); font-weight: 500;">เก่งมาก! คำตอบของคุณถูกต้องครับ</p>
             <button data-close-modal="correctModal" 
                     class="cyber-btn cyber-btn-success mt-6 text-white py-2 px-6 rounded-lg font-semibold transition duration-300 focus:outline-none"
@@ -836,15 +814,15 @@
          aria-modal="true"
          aria-live="assertive"
          aria-hidden="true">
-        <div class="modal-content" style="border-color: var(--cyber-red); box-shadow: 0 0 40px rgba(255, 51, 102, 0.4), 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255, 51, 102, 0.1);">
-            <svg class="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="color: var(--cyber-red); filter: drop-shadow(0 0 12px var(--cyber-red));">
+        <div class="modal-content">
+            <svg class="w-20 h-20 mx-auto text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <h2 id="wrongTitle" class="text-3xl font-bold neon-text mt-4 mb-2" style="color: var(--cyber-red); text-shadow: 0 0 15px var(--cyber-red), 1px 1px 2px rgba(0, 0, 0, 0.2);">ยังไม่ถูกนะ!</h2>
+            <h2 id="wrongTitle" class="text-3xl font-bold text-amber-600 mt-4 mb-2">ยังไม่ถูกนะ!</h2>
             <p id="wrongMessage" class="text-lg" style="color: var(--cyber-text-bright); font-weight: 500;">ลองคำนวณดูอีกครั้งนะครับ</p>
             <button data-close-modal="wrongModal" 
                     class="cyber-btn mt-6 text-white py-2 px-6 rounded-lg font-semibold transition duration-300 focus:outline-none"
-                    style="background: linear-gradient(135deg, var(--cyber-red) 0%, #cc0033 100%); border: 3px solid var(--cyber-red); box-shadow: 0 0 20px rgba(255, 51, 102, 0.5), 0 4px 12px rgba(255, 51, 102, 0.3), inset 0 0 15px rgba(255, 51, 102, 0.2);"
+                    style="background: linear-gradient(135deg, #c08c72 0%, #a46d57 100%); border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 12px 25px rgba(164, 109, 87, 0.35);"
                     aria-label="ปิดหน้าต่างแจ้งเตือน">
                 ลองอีกครั้ง
             </button>
@@ -1019,94 +997,135 @@
             const { L, x_pivot, x1, xf } = problemParams;
             const w = beamCanvas.width;
             const h = beamCanvas.height;
-            const beamY = h * 0.6; // ตำแหน่งคาน (แนวตั้ง)
-            const beamHeight = 20;
-            const padding = 30; // เพิ่ม padding 30px ซ้าย-ขวา
+            const frameMargin = 8;
+            const frameRadius = 18;
+            const frameTop = frameMargin +1;
+            const frameBottom = h - frameMargin;
+            const beamHeight = 24;
+            const padding = 60;
+            const beamTopY = frameBottom - 70;
+            const beamBottomY = beamTopY + beamHeight;
 
-            // map position (0-60m) to canvas width (0-800px) with padding
+            const palette = {
+                bg: '#fdfaf4',
+                bgBorder: 'rgba(31, 42, 68, 0.15)',
+                beamTop: '#c59672',
+                beamShadow: '#9b6c4d',
+                tick: '#4f6478',
+                tickLine: '#9aa8b9',
+                text: '#2b2b2b',
+                arrowForce: '#2f3e5c',
+                arrowW1: '#8c4c3c',
+                arrowW2: '#4c6b56',
+                pivot: '#b46c63'
+            };
+
+            // helper
             const scale = (pos_m) => padding + (pos_m / L) * (w - padding * 2);
 
-            // Clear canvas - Cyberpunk light background
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            ctx.fillRect(0, 0, w, h);
+            ctx.clearRect(0, 0, w, h);
 
-            // Draw Beam - Neon style (darker for contrast)
-            ctx.fillStyle = '#6a00ff'; // Purple
-            ctx.fillRect(0, beamY, w, beamHeight);
-            // Add glow effect
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = '#6a00ff';
-            ctx.fillRect(0, beamY, w, beamHeight);
-            ctx.shadowBlur = 0;
+            // background frame
+            ctx.fillStyle = palette.bg;
+            ctx.strokeStyle = palette.bgBorder;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(frameMargin + frameRadius, frameTop);
+            ctx.lineTo(w - frameMargin - frameRadius, frameTop);
+            ctx.quadraticCurveTo(w - frameMargin, frameTop, w - frameMargin, frameTop + frameRadius);
+            ctx.lineTo(w - frameMargin, frameBottom - frameRadius);
+            ctx.quadraticCurveTo(w - frameMargin, frameBottom, w - frameMargin - frameRadius, frameBottom);
+            ctx.lineTo(frameMargin + frameRadius, frameBottom);
+            ctx.quadraticCurveTo(frameMargin, frameBottom, frameMargin, frameBottom - frameRadius);
+            ctx.lineTo(frameMargin, frameTop + frameRadius);
+            ctx.quadraticCurveTo(frameMargin, frameTop, frameMargin + frameRadius, frameTop);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
 
-            // Draw Scale - Dark cyan for contrast
-            ctx.fillStyle = '#0099cc';
-            ctx.font = 'bold 14px Arial';
-            ctx.textAlign = 'center';
+            // beam
+            const beamGradient = ctx.createLinearGradient(0, beamTopY, 0, beamBottomY);
+            beamGradient.addColorStop(0, palette.beamTop);
+            beamGradient.addColorStop(1, palette.beamShadow);
+            ctx.fillStyle = beamGradient;
+            ctx.fillRect(padding, beamTopY, w - padding * 2, beamHeight);
+
+            // ticks and labels
+            ctx.strokeStyle = palette.tickLine;
+            ctx.fillStyle = palette.text;
+            ctx.lineWidth = 2;
+            ctx.font = '600 14px "Inter", Arial, sans-serif';
+            ctx.textBaseline = 'top';
+
             for (let i = 0; i <= L; i += 5) {
                 const x = scale(i);
-                ctx.fillRect(x - 0.5, beamY - 10, 1, 10); // ขีดสเกล
-                ctx.fillStyle = '#0099cc';
-                ctx.fillText(i, x, beamY + beamHeight + 15); // ตัวเลข
+                ctx.beginPath();
+                ctx.moveTo(x, beamTopY);
+                ctx.lineTo(x, beamTopY - 12);
+                ctx.stroke();
+
+                ctx.save();
+                if (i === 0) {
+                    ctx.textAlign = 'left';
+                } else if (i === L) {
+                    ctx.textAlign = 'right';
+                } else {
+                    ctx.textAlign = 'center';
+                }
+                ctx.fillText(`${i}`, x, beamTopY - 28);
+                ctx.restore();
             }
 
-            // Draw Forces and Pivot - Cyberpunk neon colors
-            const drawArrow = (x, label, color, direction = 'down') => {
+            // axis baseline label
+            ctx.textAlign = 'center';
+            ctx.fillStyle = palette.tick;
+            ctx.font = '500 13px "Inter", Arial, sans-serif';
+            ctx.fillText('ระยะ (เมตร)', w / 2, frameTop + 50);
+
+            const drawArrow = (x, label, color, labelOffset = 0) => {
                 const x_px = scale(x);
-                ctx.fillStyle = color;
                 ctx.strokeStyle = color;
+                ctx.fillStyle = color;
                 ctx.lineWidth = 3;
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = color;
-                
-                // Text Label - Neon glow
-                ctx.font = 'bold 16px Arial';
-                ctx.fillText(label, x_px, beamY - 35);
-                
-                // Arrow Line
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.font = '600 16px "Inter", Arial, sans-serif';
+                ctx.fillText(label, x_px, beamTopY - 42 + labelOffset);
+
                 ctx.beginPath();
-                ctx.moveTo(x_px, beamY - 30);
-                ctx.lineTo(x_px, beamY - 5);
+                ctx.moveTo(x_px, beamTopY - 20);
+                ctx.lineTo(x_px, beamTopY - 4);
                 ctx.stroke();
-                
-                // Arrow Head
+
                 ctx.beginPath();
-                ctx.moveTo(x_px, beamY);
-                ctx.lineTo(x_px - 5, beamY - 10);
-                ctx.lineTo(x_px + 5, beamY - 10);
+                ctx.moveTo(x_px, beamTopY);
+                ctx.lineTo(x_px - 6, beamTopY - 12);
+                ctx.lineTo(x_px + 6, beamTopY - 12);
+                ctx.closePath();
                 ctx.fill();
-                
-                ctx.shadowBlur = 0;
             };
 
             const drawPivot = (x, label, color) => {
                 const x_px = scale(x);
                 ctx.fillStyle = color;
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = color;
-                
-                // Text Label - Neon glow
-                ctx.font = 'bold 16px Arial';
-                ctx.fillText(label, x_px, beamY + beamHeight + 40);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                ctx.font = '600 16px "Inter", Arial, sans-serif';
+                ctx.fillText(label, x_px, beamBottomY + 12);
 
-                // Triangle
                 ctx.beginPath();
-                ctx.moveTo(x_px, beamY + beamHeight + 5);
-                ctx.lineTo(x_px - 15, beamY + beamHeight + 25);
-                ctx.lineTo(x_px + 15, beamY + beamHeight + 25);
+                ctx.moveTo(x_px, beamBottomY + 4);
+                ctx.lineTo(x_px - 18, beamBottomY + 30);
+                ctx.lineTo(x_px + 18, beamBottomY + 30);
+                ctx.closePath();
                 ctx.fill();
-                
-                ctx.shadowBlur = 0;
             };
-            
-            // Draw elements - Cyberpunk neon colors (darker for light theme)
-            drawPivot(x_pivot, 'Fulcrum (30.0m)', '#ff3366'); // Darker red/pink
-            drawArrow(xf, `F = ? (${xf.toFixed(1)}m)`, '#0099cc'); // Darker cyan
-            drawArrow(x1, `W1=50N (${x1}m)`, '#d500ff'); // Darker pink
-            
-            // Draw W2 if position is provided
+
+            drawPivot(x_pivot, 'Fulcrum (30.0m)', palette.pivot);
+            drawArrow(xf, `F = ? (${xf.toFixed(1)}m)`, palette.arrowForce);
+            drawArrow(x1, `W1 = 50N (${x1}m)`, palette.arrowW1);
             if (x2_pos !== null && x2_pos >= 0 && x2_pos <= L) {
-                drawArrow(x2_pos, `W2=10N (${x2_pos}m)`, '#00cc66'); // Darker green
+                drawArrow(x2_pos, `W2 = 10N (${x2_pos}m)`, palette.arrowW2, 16);
             }
         }
 
@@ -1123,10 +1142,8 @@
             setMinutes.disabled = true;
             setSeconds.disabled = true;
 
-            timerDisplay.classList.remove('neon-cyan');
-            timerDisplay.classList.add('neon-text');
-            timerDisplay.style.color = 'var(--cyber-red)';
-            timerDisplay.style.textShadow = '0 0 15px var(--cyber-red), 1px 1px 2px rgba(0, 0, 0, 0.2)';
+            timerDisplay.style.color = '#b91c1c';
+            timerDisplay.style.textShadow = 'none';
 
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -1137,14 +1154,9 @@
                 } else if (timeLeft <= 10) {
                     // 10 วินาทีสุดท้าย
                     if (soundsReady) tickSnd.triggerAttackRelease("C2", "0.05");
-                    timerBar.style.background = 'linear-gradient(90deg, var(--cyber-red) 0%, #cc0033 100%)';
-                    timerBar.style.boxShadow = '0 0 20px var(--cyber-red), inset 0 0 10px rgba(255, 51, 102, 0.3)';
-                    // Toggle glow effect for urgency
-                    if (timerDisplay.style.textShadow.includes('25px')) {
-                        timerDisplay.style.textShadow = '0 0 15px var(--cyber-red), 1px 1px 2px rgba(0, 0, 0, 0.2)';
-                    } else {
-                        timerDisplay.style.textShadow = '0 0 25px var(--cyber-red), 0 0 35px var(--cyber-red), 2px 2px 4px rgba(0, 0, 0, 0.3)';
-                    }
+                    timerBar.style.background = 'linear-gradient(90deg, #c08c72 0%, #a35f45 100%)';
+                    timerBar.style.boxShadow = 'inset 0 0 8px rgba(0, 0, 0, 0.15)';
+                    timerDisplay.style.color = '#b45309';
                 }
             }, 1000);
         }
@@ -1181,15 +1193,13 @@
             setMinutes.disabled = false;
             setSeconds.disabled = false;
 
-            timerDisplay.classList.remove('neon-text');
-            timerDisplay.classList.add('neon-text', 'neon-cyan');
-            timerDisplay.style.color = '';
-            timerDisplay.style.textShadow = '';
+            timerDisplay.style.color = 'var(--cyber-text-bright)';
+            timerDisplay.style.textShadow = 'none';
             startTimerBtn.textContent = 'เริ่มจับเวลา';
             
             timerBar.style.width = '100%';
-            timerBar.style.background = 'linear-gradient(90deg, var(--cyber-green) 0%, var(--cyber-cyan) 100%)';
-            timerBar.style.boxShadow = '0 0 10px var(--cyber-green)';
+            timerBar.style.background = 'linear-gradient(90deg, #d4b483 0%, #b08c5b 100%)';
+            timerBar.style.boxShadow = 'inset 0 0 6px rgba(0, 0, 0, 0.08)';
             timerBarContainer.setAttribute('aria-valuenow', '100');
             closeModal('timeUpModal');
         }
@@ -1293,7 +1303,7 @@
                     <p>คานสม่ำเสมอยาว <strong>${L.toFixed(0)} เมตร</strong> มีจุดหมุน (Fulcrum) อยู่ที่ระยะ <strong>${x_pivot.toFixed(0)} เมตร</strong></p>
                     <p>มีวัตถุ W1 ขนาด <strong>50 N</strong> วางอยู่ที่ตำแหน่ง <strong>${x1.toFixed(1)} เมตร</strong></p>
                     <p>มีวัตถุ W2 ขนาด <strong>10 N</strong> วางอยู่ที่ตำแหน่ง <strong>(เลขที่นักเรียน + 10) เมตร</strong></p>
-                    <p class="font-bold mt-2" style="color: var(--cyber-cyan); text-shadow: 0 0 8px var(--cyber-cyan), 1px 1px 2px rgba(0, 0, 0, 0.1); font-weight: 700;">จงหาขนาดของแรงกด F (หน่วยเป็นนิวตัน) ที่ต้องกระทำ ณ ตำแหน่ง <strong style="color: var(--cyber-purple);">${xf.toFixed(1)} เมตร</strong></p>
+                    <p class="font-bold mt-2 text-slate-900">จงหาขนาดของแรงกด F (หน่วยเป็นนิวตัน) ที่ต้องกระทำ ณ ตำแหน่ง <strong>${xf.toFixed(1)} เมตร</strong></p>
                 `;
 
                 // 3. วาดคาน (ครั้งแรก)
@@ -1423,7 +1433,7 @@
                         const x2_pos = parseInt(id) + 10;
                         li.style.color = "var(--cyber-text-bright)";
                         li.style.fontWeight = "500";
-                        li.innerHTML = `<strong style="color: var(--cyber-pink); font-weight: 700;">เลขที่ ${id}:</strong> (W2 อยู่ที่ ${x2_pos}m) &rarr; คำตอบคือ <strong style="color: var(--cyber-cyan); font-weight: 700;">${answer} N</strong>`;
+                        li.innerHTML = `<strong>เลขที่ ${id}:</strong> (W2 อยู่ที่ ${x2_pos}m) &rarr; คำตอบคือ <strong>${answer} N</strong>`;
                     } else {
                         li.style.color = "var(--cyber-red)";
                         li.style.fontStyle = "italic";
