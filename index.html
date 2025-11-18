@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกม Quiz: สมดุลต่อการหมุน (โหมดเกม)</title>
+    <!-- โหลด Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- โหลด Tone.js สำหรับเสียง -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <style>
+        /* ใช้ฟอนต์ Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* ซ่อนส่วนต่างๆ ไว้ในตอนเริ่มต้น */
+        .hidden-section {
+            display: none;
+        }
+        
+        /* สไตล์สำหรับ Modal (ซ้อนทับ) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            display: none; /* เริ่มต้นด้วยการซ่อน */
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        /* แถบเวลา */
+        #timerBarContainer {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #ccc;
+        }
+        #timerBar {
+            width: 100%;
+            height: 100%;
+            background-color: #4caf50; /* สีเขียว */
+            transition: width 0.5s linear, background-color 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen p-4 sm:p-8 flex items-center justify-center">
+
+    <div class="max-w-4xl w-full mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-2xl">
+
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-blue-700 mb-6">
+            เกมทดสอบ: สมดุลต่อการหมุน
+        </h1>
+
+        <!-- 1. ส่วนสำหรับครู: สร้างโจทย์ -->
+        <div id="setupSection" class="text-center">
+            <p class="text-lg text-gray-700 mb-4">สำหรับครู: กรุณากดปุ่มเพื่อสร้างโจทย์สำหรับนักเรียน</p>
+            <button id="generateBtn" class="w-full sm:w-auto bg-blue-600 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300 shadow-md transform hover:scale-105">
+                สร้างโจทย์
+            </button>
+        </div>
+
+        <!-- 2. ส่วนแสดงโจทย์ (ซ่อนไว้) -->
+        <div id="problemSection" class="hidden-section">
+            
+            <!-- ส่วนควบคุมเวลา -->
+            <div class="text-center p-4 bg-gray-50 rounded-lg shadow-inner">
+                <!-- ส่วนสำหรับตั้งเวลา -->
+                <div class="flex justify-center items-center gap-4 mb-4">
+                    <div class="text-center">
+                        <label for="setMinutes" class="block text-sm font-medium text-gray-700">ตั้งนาที:</label>
+                        <input type="number" id="setMinutes" value="3" min="0" class="w-24 p-2 border border-gray-300 rounded-lg text-center text-lg">
+                    </div>
+                    <div class="text-center">
+                        <label for="setSeconds" class="block text-sm font-medium text-gray-700">ตั้งวินาที:</label>
+                        <input type="number" id="setSeconds" value="0" min="0" max="59" class="w-24 p-2 border border-gray-300 rounded-lg text-center text-lg">
+                    </div>
+                </div>
+
+                <!-- หน้าปัดเวลา -->
+                <div id="timer" class="text-3xl sm:text-4xl font-bold text-gray-700 text-center my-2">
+                    เวลา: 3:00
+                </div>
+                
+                <!-- แถบเวลา -->
+                <div id="timerBarContainer" class="mb-4">
+                    <div id="timerBar"></div>
+                </div>
+
+                <!-- ปุ่มควบคุม -->
+                <div class="flex flex-wrap justify-center gap-2 sm:gap-4 mt-2 mb-4">
+                    <button id="startTimerBtn" class="w-auto bg-green-600 text-white py-2 px-5 rounded-lg font-semibold hover:bg-green-700 transition duration-300 shadow">
+                        เริ่มจับเวลา
+                    </button>
+                    <button id="stopTimerBtn" class="w-auto bg-yellow-500 text-white py-2 px-5 rounded-lg font-semibold hover:bg-yellow-600 transition duration-300 shadow" disabled>
+                        หยุดเวลา
+                    </button>
+                    <button id="resetTimerBtn" class="w-auto bg-red-600 text-white py-2 px-5 rounded-lg font-semibold hover:bg-red-700 transition duration-300 shadow">
+                        รีเซ็ต
+                    </button>
+                </div>
+            </div>
+
+            <!-- แสดงโจทย์ (Canvas) -->
+            <div class="my-6">
+                <canvas id="beamCanvas" width="800" height="150" class="w-full h-auto bg-gray-100 rounded-lg border-2 border-gray-300"></canvas>
+            </div>
+
+            <!-- แสดงโจทย์ (Text) -->
+            <div id="problemStatement" class="bg-gray-50 p-6 rounded-lg border border-gray-200 text-lg leading-relaxed shadow-inner">
+                <!-- เนื้อหาโจทย์จะถูกเติมโดย JavaScript -->
+            </div>
+        </div>
+
+        <!-- 3. ส่วนสำหรับนักเรียน (กลับมาแล้ว!) -->
+        <div id="quizSection" class="hidden-section mt-6 border-t pt-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">สำหรับนักเรียน</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="studentIdInput" class="block text-sm font-medium text-gray-700">1. กรอกเลขที่ (ดู $W2$ ขยับบนคาน!)</label>
+                    <input type="number" id="studentIdInput" placeholder="เช่น 40" class="w-full p-3 border border-gray-300 rounded-lg text-lg focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="answerInput" class="block text-sm font-medium text-gray-700">2. กรอกคำตอบ (แรง $F$)</label>
+                    <input type="number" id="answerInput" placeholder="เช่น -12.34" class="w-full p-3 border border-gray-300 rounded-lg text-lg focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+            <button id="submitAnswerBtn" class="w-full bg-green-600 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-green-700 transition duration-300 mt-4 shadow-md transform hover:scale-105">
+                ส่งคำตอบ
+            </button>
+        </div>
+
+
+        <!-- 4. ส่วนสำหรับครู: เฉลย (ซ่อนไว้) -->
+        <div id="solutionSection" class="hidden-section mt-6 border-t pt-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">สำหรับครู (เฉลย)</h2>
+            <div class="mb-4">
+                <label for="studentCount" class="block text-sm font-medium text-gray-700 mb-1">เลือกจำนวนนักเรียน (1-5 คน):</label>
+                <select id="studentCount" class="w-full sm:w-auto p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    <option value="1">1 คน</option>
+                    <option value="2">2 คน</option>
+                    <option value="3">3 คน</option>
+                    <option value="4">4 คน</option>
+                    <option value="5">5 คน</option>
+                </select>
+            </div>
+            
+            <div id="solutionInputs" class="space-y-3 mb-4">
+                <!-- ช่องกรอกเลขที่จะถูกสร้างโดย JavaScript -->
+            </div>
+
+            <button id="showSolutionBtn" class="w-full sm:w-auto bg-purple-600 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-purple-700 transition duration-300 shadow-md">
+                แสดงเฉลย
+            </button>
+
+            <div id="solutionDisplay" class="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <h3 class="font-semibold">ผลลัพธ์:</h3>
+                <ul id="solutionList" class="list-disc list-inside space-y-1">
+                    <!-- เนื้อหาเฉลยจะถูกเติมโดย JavaScript -->
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal แจ้งเตือนหมดเวลา -->
+    <div id="timeUpModal" class="modal-overlay">
+        <div class="modal-content">
+            <svg class="w-20 h-20 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h2 class="text-3xl font-bold text-red-600 mt-4 mb-2">หมดเวลา!</h2>
+            <p class="text-lg text-gray-700">หมดเวลาการทำแบบทดสอบแล้ว</p>
+            <button data-close-modal="timeUpModal" class="mt-6 bg-blue-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                รับทราบ
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal แจ้งเตือน "ถูกต้อง" -->
+    <div id="correctModal" class="modal-overlay">
+        <div class="modal-content border-4 border-green-400">
+            <svg class="w-20 h-20 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h2 class="text-3xl font-bold text-green-600 mt-4 mb-2">ถูกต้อง!</h2>
+            <p class="text-lg text-gray-700">เก่งมาก! คำตอบของคุณถูกต้องครับ</p>
+            <button data-close-modal="correctModal" class="mt-6 bg-green-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
+                ไปต่อ
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal แจ้งเตือน "ผิด" -->
+    <div id="wrongModal" class="modal-overlay">
+        <div class="modal-content border-4 border-red-400">
+            <svg class="w-20 h-20 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h2 class="text-3xl font-bold text-red-600 mt-4 mb-2">ยังไม่ถูกนะ!</h2>
+            <p class="text-lg text-gray-700">ลองคำนวณดูอีกครั้งนะครับ</p>
+            <button data-close-modal="wrongModal" class="mt-6 bg-red-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-red-700 transition duration-300">
+                ลองอีกครั้ง
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        // --- ตัวแปร Global ---
+        let problemParams = {}; 
+        let timerInterval = null;
+        let timeLeft = 180;
+        let initialTime = 180;
+        let soundsReady = false;
+
+        // --- Tone.js Sound Synths ---
+        let clickSnd, correctSnd, wrongSnd, tickSnd, gongSnd;
+
+        function setupSounds() {
+            // ใช้ synth พื้นฐานเพื่อลดความซับซ้อน
+            clickSnd = new Tone.Synth({
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }
+            }).toDestination();
+            
+            correctSnd = new Tone.Synth({
+                oscillator: { type: "triangle" },
+                envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.2 }
+            }).toDestination();
+            
+            wrongSnd = new Tone.Synth({
+                oscillator: { type: "square" },
+                envelope: { attack: 0.01, decay: 0.3, sustain: 0, release: 0.1 }
+            }).toDestination();
+
+            tickSnd = new Tone.MembraneSynth().toDestination();
+            
+            gongSnd = new Tone.MetalSynth({
+                frequency: 150,
+                envelope: { attack: 0.001, decay: 1.4, release: 0.2 },
+                harmonicity: 5.1,
+                modulationIndex: 32,
+                resonance: 4000,
+                octaves: 1.5
+            }).toDestination();
+
+            soundsReady = true;
+        }
+
+        // --- Element References ---
+        const setupSection = document.getElementById('setupSection');
+        const problemSection = document.getElementById('problemSection');
+        const quizSection = document.getElementById('quizSection'); // กลับมาแล้ว
+        const solutionSection = document.getElementById('solutionSection');
+        
+        const generateBtn = document.getElementById('generateBtn');
+        const timerDisplay = document.getElementById('timer');
+        const timerBar = document.getElementById('timerBar');
+        const startTimerBtn = document.getElementById('startTimerBtn');
+        const stopTimerBtn = document.getElementById('stopTimerBtn');
+        const resetTimerBtn = document.getElementById('resetTimerBtn');
+        const setMinutes = document.getElementById('setMinutes');
+        const setSeconds = document.getElementById('setSeconds');
+        const problemStatement = document.getElementById('problemStatement');
+        
+        const beamCanvas = document.getElementById('beamCanvas'); // Canvas
+        const ctx = beamCanvas.getContext('2d');
+        
+        const studentIdInput = document.getElementById('studentIdInput'); // กลับมาแล้ว
+        const answerInput = document.getElementById('answerInput'); // กลับมาแล้ว
+        const submitAnswerBtn = document.getElementById('submitAnswerBtn'); // กลับมาแล้ว
+
+        const studentCountSelect = document.getElementById('studentCount');
+        const solutionInputsContainer = document.getElementById('solutionInputs');
+        const showSolutionBtn = document.getElementById('showSolutionBtn');
+        const solutionList = document.getElementById('solutionList');
+
+        // Modals
+        const timeUpModal = document.getElementById('timeUpModal');
+        const correctModal = document.getElementById('correctModal');
+        const wrongModal = document.getElementById('wrongModal');
+        
+        // --- Utility Functions ---
+        function randomFloat(min, max) {
+            return parseFloat((Math.random() * (max - min) + min).toFixed(1));
+        }
+
+        function calculateAnswer(studentID) {
+            if (!problemParams.L || !studentID) {
+                return null;
+            }
+            const { x_pivot, xf, W1_val, x1, W2_val } = problemParams;
+            const id = parseInt(studentID);
+            const W1 = W1_val, W2 = W2_val;
+            const x2 = id + 10;
+            const M1 = W1 * (x1 - x_pivot);
+            const M2 = W2 * (x2 - x_pivot);
+            const M_weights = M1 + M2;
+            
+            const arm_F = xf - x_pivot; // คำนวณแขนโมเมนต์ของ F
+            
+            // ป้องกันการหารด้วยศูนย์
+            if (arm_F === 0) { 
+                return "Infinity"; 
+            }
+            
+            const F = -M_weights / arm_F; // สูตรที่ถูกต้อง
+            return F.toFixed(2);
+        }
+        
+        // --- Canvas Drawing Function ---
+        function drawBeam(x2_pos = null) {
+            const { L, x_pivot, x1, xf } = problemParams;
+            const w = beamCanvas.width;
+            const h = beamCanvas.height;
+            const beamY = h * 0.6; // ตำแหน่งคาน (แนวตั้ง)
+            const beamHeight = 20;
+            const padding = 30; // เพิ่ม padding 30px ซ้าย-ขวา
+
+            // map position (0-60m) to canvas width (0-800px) with padding
+            const scale = (pos_m) => padding + (pos_m / L) * (w - padding * 2);
+
+            // Clear canvas
+            ctx.fillStyle = '#f1f5f9'; // bg-gray-100
+            ctx.fillRect(0, 0, w, h);
+
+            // Draw Beam
+            ctx.fillStyle = '#8B4513'; // สีไม้
+            ctx.fillRect(0, beamY, w, beamHeight);
+
+            // Draw Scale
+            ctx.fillStyle = 'black';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            for (let i = 0; i <= L; i += 5) {
+                const x = scale(i);
+                ctx.fillRect(x - 0.5, beamY - 10, 1, 10); // ขีดสเกล
+                ctx.fillText(i, x, beamY + beamHeight + 15); // ตัวเลข
+            }
+
+            // Draw Forces and Pivot
+            const drawArrow = (x, label, color, direction = 'down') => {
+                const x_px = scale(x);
+                ctx.fillStyle = color;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                
+                // Text Label
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText(label, x_px, beamY - 35);
+                
+                // Arrow Line
+                ctx.beginPath();
+                ctx.moveTo(x_px, beamY - 30);
+                ctx.lineTo(x_px, beamY - 5);
+                ctx.stroke();
+                
+                // Arrow Head
+                ctx.beginPath();
+                ctx.moveTo(x_px, beamY);
+                ctx.lineTo(x_px - 5, beamY - 10);
+                ctx.lineTo(x_px + 5, beamY - 10);
+                ctx.fill();
+            };
+
+            const drawPivot = (x, label, color) => {
+                const x_px = scale(x);
+                ctx.fillStyle = color;
+                
+                // Text Label
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText(label, x_px, beamY + beamHeight + 40);
+
+                // Triangle
+                ctx.beginPath();
+                ctx.moveTo(x_px, beamY + beamHeight + 5);
+                ctx.lineTo(x_px - 15, beamY + beamHeight + 25);
+                ctx.lineTo(x_px + 15, beamY + beamHeight + 25);
+                ctx.fill();
+            };
+            
+            // Draw elements
+            drawPivot(x_pivot, 'Fulcrum (30.0m)', 'darkred'); // <-- เปลี่ยนชื่อ
+            drawArrow(xf, `F = ? (${xf.toFixed(1)}m)`, 'blue'); // อัปเดต label ของ F
+            drawArrow(x1, `W1=50N (${x1}m)`, 'orange');
+            
+            // Draw W2 if position is provided
+            if (x2_pos !== null && x2_pos >= 0 && x2_pos <= L) {
+                drawArrow(x2_pos, `W2=10N (${x2_pos}m)`, 'green');
+            }
+        }
+
+        // --- Timer Functions ---
+        function startTimer() {
+            if (timerInterval) return; // ป้องกันการกดซ้ำ
+            if (soundsReady) {
+                // Play click sound
+                clickSnd.triggerAttackRelease("C4", "0.1");
+            }
+
+            startTimerBtn.disabled = true;
+            stopTimerBtn.disabled = false;
+            setMinutes.disabled = true;
+            setSeconds.disabled = true;
+
+            timerDisplay.classList.remove('text-gray-700');
+            timerDisplay.classList.add('text-red-600');
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    endQuiz();
+                } else if (timeLeft <= 10) {
+                    // 10 วินาทีสุดท้าย
+                    if (soundsReady) tickSnd.triggerAttackRelease("C2", "0.05");
+                    timerBar.style.backgroundColor = '#ef4444'; // สีแดง
+                    timerDisplay.classList.toggle('text-red-700'); // กระพริบ
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (soundsReady) clickSnd.triggerAttackRelease("C4", "0.1");
+            clearInterval(timerInterval);
+            timerInterval = null;
+            startTimerBtn.disabled = false;
+            stopTimerBtn.disabled = true;
+            setMinutes.disabled = false;
+            setSeconds.disabled = false;
+        }
+
+        function resetTimer() {
+            // if (soundsReady) clickSnd.triggerAttackRelease("C4", "0.1"); // <-- *** MOVED ***
+            clearInterval(timerInterval);
+            timerInterval = null;
+            
+            let minutes = parseInt(setMinutes.value) || 0;
+            let seconds = parseInt(setSeconds.value) || 0;
+            if (minutes < 0) minutes = 0;
+            if (seconds < 0) seconds = 0; if (seconds > 59) seconds = 59;
+            setMinutes.value = minutes; setSeconds.value = seconds;
+
+            initialTime = (minutes * 60) + seconds;
+            if (initialTime === 0) initialTime = 1; // ป้องกันหารด้วย 0
+            timeLeft = initialTime;
+            
+            updateTimerDisplay(); 
+
+            startTimerBtn.disabled = false;
+            stopTimerBtn.disabled = true;
+            setMinutes.disabled = false;
+            setSeconds.disabled = false;
+
+            timerDisplay.classList.remove('text-red-600', 'text-red-700');
+            timerDisplay.classList.add('text-gray-700');
+            startTimerBtn.textContent = 'เริ่มจับเวลา';
+            
+            timerBar.style.width = '100%';
+            timerBar.style.backgroundColor = '#4caf50'; // สีเขียว
+            timeUpModal.style.display = 'none';
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `เวลา: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            // อัปเดตแถบเวลา
+            const percentage = (timeLeft / initialTime) * 100;
+            timerBar.style.width = `${percentage}%`;
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerDisplay.textContent = "หมดเวลา!";
+            
+            startTimerBtn.textContent = 'หมดเวลา';
+            startTimerBtn.disabled = true;
+            stopTimerBtn.disabled = true;
+
+            if (soundsReady) gongSnd.triggerAttackRelease(0.1);
+            timeUpModal.style.display = 'flex';
+        }
+
+        // --- Event Handlers ---
+
+        // 1. ครู: กดสร้างโจทย์
+        generateBtn.addEventListener('click', async () => {
+            // เริ่มการทำงานของเสียง (ต้องมีการโต้ตอบจากผู้ใช้ก่อน)
+            if (!soundsReady) {
+                await Tone.start();
+                setupSounds();
+            }
+            clickSnd.triggerAttackRelease("C4", "0.1");
+
+            // 1. สร้างพารามิเตอร์โจทย์
+            const L = 60.0, x_pivot = 30.0, W1_val = 50.0, W2_val = 10.0;
+            const xf = randomFloat(1.0, 10.0); // สุ่มตำแหน่ง F จาก 1-10
+            const x1 = randomFloat(30.1, 60.0);
+            problemParams = { L, x_pivot, xf, W1_val, x1, W2_val };
+
+            // 2. แสดงโจทย์ (Text)
+            problemStatement.innerHTML = `
+                <p>คานสม่ำเสมอยาว <strong>${L.toFixed(0)} เมตร</strong> มีจุดหมุน (Fulcrum) อยู่ที่ระยะ <strong>${x_pivot.toFixed(0)} เมตร</strong></p>
+                <p>มีวัตถุ W1 ขนาด <strong>50 N</strong> วางอยู่ที่ตำแหน่ง <strong>${x1.toFixed(1)} เมตร</strong></p>
+                <p>มีวัตถุ W2 ขนาด <strong>10 N</strong> วางอยู่ที่ตำแหน่ง <strong>(เลขที่นักเรียน + 10) เมตร</strong></p>
+                <p class="font-bold text-blue-700 mt-2">จงหาขนาดของแรงกด F (หน่วยเป็นนิวตัน) ที่ต้องกระทำ ณ ตำแหน่ง <strong>${xf.toFixed(1)} เมตร</strong></p>
+            `;
+
+            // 3. วาดคาน (ครั้งแรก)
+            drawBeam(null); // ยังไม่มี W2
+
+            // 4. แสดง/ซ่อนส่วนต่างๆ
+            setupSection.style.display = 'none';
+            problemSection.style.display = 'block';
+            quizSection.style.display = 'block'; // แสดงส่วนของนักเรียน
+            solutionSection.style.display = 'block';
+
+            // 5. อัปเดตช่องกรอกเฉลย
+            updateSolutionInputs(1);
+            
+            // 6. รีเซ็ตอินพุตนักเรียน
+            studentIdInput.value = '';
+            answerInput.value = '';
+
+            // 7. รีเซ็ตปุ่มจับเวลา
+            setMinutes.value = 3;
+            setSeconds.value = 0;
+            resetTimer();
+        });
+        
+        // 2. ปุ่มควบคุมเวลา
+        startTimerBtn.addEventListener('click', startTimer);
+        stopTimerBtn.addEventListener('click', stopTimer);
+        
+        // *** START FIX ***
+        // แยกเสียงออกจาก logic เพื่อป้องกันการเรียกซ้ำ
+        resetTimerBtn.addEventListener('click', () => {
+            if (soundsReady) clickSnd.triggerAttackRelease("C4", "0.1");
+            resetTimer();
+        });
+        // *** END FIX ***
+        
+        setMinutes.addEventListener('input', resetTimer); // เรียก logic โดยตรง (ไม่มีเสียง)
+        setSeconds.addEventListener('input', resetTimer); // เรียก logic โดยตรง (ไม่มีเสียง)
+
+        // 3. ปิด Modal
+        document.querySelectorAll('[data-close-modal]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (soundsReady) clickSnd.triggerAttackRelease("C4", "0.1");
+                document.getElementById(btn.dataset.closeModal).style.display = 'none';
+            });
+        });
+
+        // 4. ครู: เปลี่ยนจำนวนนักเรียนที่จะเฉลย
+        studentCountSelect.addEventListener('change', (e) => {
+            updateSolutionInputs(parseInt(e.target.value));
+        });
+
+        function updateSolutionInputs(count) {
+            solutionInputsContainer.innerHTML = '';
+            for (let i = 1; i <= count; i++) {
+                const div = document.createElement('div');
+                div.className = "flex items-center gap-2";
+                const label = document.createElement('label');
+                label.setAttribute('for', `solution_id_${i}`);
+                label.className = "text-sm font-medium text-gray-700 w-20";
+                label.textContent = `เลขที่ ${i}:`;
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.id = `solution_id_${i}`;
+                input.placeholder = "กรอกเลขที่";
+                input.className = "w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500";
+                div.appendChild(label);
+                div.appendChild(input);
+                solutionInputsContainer.appendChild(div);
+            }
+        }
+
+        // 5. ครู: กดปุ่มแสดงเฉลย
+        showSolutionBtn.addEventListener('click', () => {
+            if (soundsReady) clickSnd.triggerAttackRelease("C4", "0.1");
+            solutionList.innerHTML = '';
+            const count = parseInt(studentCountSelect.value);
+            for (let i = 1; i <= count; i++) {
+                const input = document.getElementById(`solution_id_${i}`);
+                const id = input.value;
+                const li = document.createElement('li');
+                if (id) {
+                    const answer = calculateAnswer(id);
+                    const x2_pos = parseInt(id) + 10;
+                    li.className = "text-gray-800";
+                    li.innerHTML = `<strong>เลขที่ ${id}:</strong> (W2 อยู่ที่ ${x2_pos}m) &rarr; คำตอบคือ <strong>${answer} N</strong>`;
+                } else {
+                    li.className = "text-gray-600 italic";
+                    li.textContent = `กรุณากรอกเลขที่สำหรับนักเรียนคนที่ ${i}`;
+                }
+                solutionList.appendChild(li);
+            }
+        });
+
+        // 6. นักเรียน: พิมพ์เลขที่ (Interactive)
+        studentIdInput.addEventListener('input', (e) => {
+            const id = e.target.value;
+            if (id) {
+                const x2_pos = parseInt(id) + 10;
+                drawBeam(x2_pos); // วาดคานใหม่พร้อม W2
+            } else {
+                drawBeam(null); // ไม่มี W2
+            }
+        });
+
+        // 7. นักเรียน: กดส่งคำตอบ
+        submitAnswerBtn.addEventListener('click', () => {
+            const id = studentIdInput.value;
+            const answer = answerInput.value;
+
+            if (!id || !answer) {
+                // อาจจะแจ้งเตือนว่าให้กรอกข้อมูลให้ครบ
+                if (soundsReady) wrongSnd.triggerAttackRelease("A2", 0.2);
+                wrongModal.style.display = 'flex';
+                wrongModal.querySelector('p').textContent = "กรุณากรอกเลขที่และคำตอบก่อนครับ";
+                return;
+            }
+
+            const correctAnswerString = calculateAnswer(id);
+            
+            // --- START: การเปลี่ยนแปลงตรรกะการตรวจคำตอบ ---
+
+            // ตรวจสอบกรณีพิเศษ (เช่น หารด้วยศูนย์)
+            if (correctAnswerString === "Infinity" || correctAnswerString === null) {
+                if (soundsReady) wrongSnd.triggerAttackRelease("A2", 0.2);
+                wrongModal.querySelector('p').textContent = "ไม่สามารถคำนวณได้ (อาจเกิดการหารด้วยศูนย์)";
+                wrongModal.style.display = 'flex';
+                return;
+            }
+
+            // แปลงค่าจาก string เป็น number เพื่อเปรียบเทียบ
+            const correctNum = parseFloat(correctAnswerString);
+            const studentNum = parseFloat(answer);
+
+            // ตรวจสอบว่านักเรียนกรอกตัวเลขที่ถูกต้องหรือไม่
+            if (isNaN(studentNum)) {
+                if (soundsReady) wrongSnd.triggerAttackRelease("A2", 0.2);
+                wrongModal.querySelector('p').textContent = "กรุณากรอกคำตอบเป็นตัวเลขที่ถูกต้อง";
+                wrongModal.style.display = 'flex';
+                return;
+            }
+
+            // คำนวณส่วนต่าง
+            const difference = Math.abs(correctNum - studentNum);
+            
+            // ตรวจสอบว่าส่วนต่างอยู่ในเกณฑ์ที่ยอมรับได้ (<= 0.02)
+            const isCorrect = difference <= 0.02;
+
+            // --- END: การเปลี่ยนแปลงตรรกะการตรวจคำตอบ ---
+
+            if (isCorrect) {
+                // ถูกต้อง
+                if (soundsReady) correctSnd.triggerAttackRelease("C5", 0.3);
+                correctModal.style.display = 'flex';
+            } else {
+                // ผิด
+                if (soundsReady) wrongSnd.triggerAttackRelease("A2", 0.2);
+                // แสดงคำตอบที่ถูกต้องเพื่อให้นักเรียนตรวจสอบ
+                wrongModal.querySelector('p').textContent = `คำตอบที่ถูกต้องคือ ${correctAnswerString} N ลองอีกครั้งนะ`;
+                wrongModal.style.display = 'flex';
+            }
+        });
+
+    </script>
+</body>
+</html>
