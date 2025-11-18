@@ -450,7 +450,9 @@
             <img 
                 src="https://img5.pic.in.th/file/secure-sv1/Gemini_1.png" 
                 alt="ภาพประกอบสมดุลต่อการหมุน" 
-                class="hero-image">
+                class="hero-image"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='assets/hero-placeholder.svg'; this.alt='Rotational Equilibrium cover art';">
         </div>
 
         <p class="text-center text-sm sm:text-base text-slate-500 mb-6">ผู้พัฒนาเกม: นายสาธิต ศิริวัชน์ (Coolnut)</p>
@@ -597,6 +599,14 @@
 
         <!-- 2. ส่วนแสดงโจทย์ (ซ่อนไว้) -->
         <div id="problemSection" class="hidden-section" role="region" aria-label="ส่วนแสดงโจทย์">
+            <div class="flex justify-end mb-4">
+                <button id="backHomeBtn"
+                        class="cyber-btn w-full sm:w-auto text-white py-2 px-4 sm:px-6 rounded-lg text-sm sm:text-base font-semibold transition duration-300 focus:outline-none"
+                        style="background: linear-gradient(135deg, #4f6657 0%, #2f3e5c 100%); box-shadow: 0 12px 25px rgba(47, 62, 92, 0.25);"
+                        aria-label="กลับไปหน้าแรก">
+                    ← กลับหน้าแรก
+                </button>
+            </div>
             
             <!-- ส่วนควบคุมเวลา -->
             <div class="text-center p-3 sm:p-4 cyber-card rounded-lg" role="group" aria-label="ตัวควบคุมเวลา">
@@ -934,6 +944,7 @@
         const quizSection = document.getElementById('quizSection'); // กลับมาแล้ว
         const solutionSection = document.getElementById('solutionSection');
         const learningSection = document.getElementById('learningSection');
+        const backHomeBtn = document.getElementById('backHomeBtn');
         
         const generateBtn = document.getElementById('generateBtn');
         const learnBtn = document.getElementById('learnBtn');
@@ -1276,6 +1287,37 @@
             learningSection.style.display = 'none';
             setupSection.style.display = 'block';
         });
+
+        if (backHomeBtn) {
+            backHomeBtn.addEventListener('click', () => {
+                try {
+                    if (soundsReady) clickSnd.triggerAttackRelease("C4", "0.1");
+                } catch (error) {
+                    console.warn('ไม่สามารถเล่นเสียงได้:', error);
+                }
+
+                setMinutes.value = 3;
+                setSeconds.value = 0;
+                resetTimer();
+
+                setupSection.style.display = 'block';
+                learningSection.style.display = 'none';
+                problemSection.style.display = 'none';
+                quizSection.style.display = 'none';
+                solutionSection.style.display = 'none';
+
+                problemStatement.innerHTML = '';
+                solutionInputsContainer.innerHTML = '';
+                solutionList.innerHTML = '';
+                if (typeof drawBeam === 'function') {
+                    drawBeam(null);
+                }
+                studentIdInput.value = '';
+                answerInput.value = '';
+
+                generateBtn.focus({preventScroll: true});
+            });
+        }
 
         // 1. ครู: กดสร้างโจทย์
         generateBtn.addEventListener('click', async () => {
