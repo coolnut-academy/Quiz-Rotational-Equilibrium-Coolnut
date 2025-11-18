@@ -54,7 +54,7 @@
 
 1. Clone repository นี้:
 ```bash
-git clone https://github.com/yourusername/quiz-rotational-eq.git
+git clone https://github.com/coolnut-academy/Quiz-Rotational-Equilibrium-Coolnut
 ```
 
 2. เปิดไฟล์ `index.html` ในเว็บเบราว์เซอร์
