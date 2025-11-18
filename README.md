@@ -1,5 +1,5 @@
 # เกม Quiz: สมดุลต่อการหมุน (Rotational Equilibrium Quiz)
-
+https://img5.pic.in.th/file/secure-sv1/Gemini_1.png
 เว็บแอปพลิเคชันสำหรับทดสอบความรู้เรื่องสมดุลต่อการหมุน (Rotational Equilibrium) ในวิชาฟิสิกส์ โดยมีโหมดสำหรับครูและนักเรียน
 
 ## ✨ คุณสมบัติ
