@@ -527,7 +527,7 @@
                             <h4 class="text-lg sm:text-xl font-bold mb-3">โจทย์ตัวอย่าง:</h4>
                             <p class="mb-3">คานสม่ำเสมอยาว 60 เมตร มีจุดหมุน (Fulcrum) อยู่ที่ระยะ 30 เมตร</p>
                             <p class="mb-3">มีวัตถุ W1 = 50 N วางอยู่ที่ตำแหน่ง 45 เมตร</p>
-                            <p class="mb-3">มีวัตถุ W2 = 10 N วางอยู่ที่ตำแหน่ง 40 เมตร (เลขที่นักเรียน + 10)</p>
+                            <p class="mb-3">มีวัตถุ W2 = 10 N วางอยู่ที่ตำแหน่ง 40 เมตร (ตัวอย่าง: เลขที่ 28 + ค่าสุ่ม 12 เมตร)</p>
                             <p class="mb-3"><strong>จงหาขนาดของแรง F ที่ต้องกระทำที่ตำแหน่ง 5 เมตร</strong></p>
                             
                             <div class="bg-white bg-opacity-20 p-3 rounded mt-4">
@@ -579,7 +579,7 @@
                         <div class="cyber-card p-4 rounded-lg my-3" style="border-color: var(--cyber-blue); box-shadow: 0 0 15px rgba(0, 102, 255, 0.3), inset 0 0 10px rgba(0, 102, 255, 0.1);">
                             <p class="mb-2">สำหรับโจทย์ใน Quiz นี้:</p>
                             <div class="space-y-2 text-sm sm:text-base" style="color: var(--cyber-text-bright); font-weight: 500;">
-                                <p>• $x_2 = \text{เลขที่นักเรียน} + 10$ (เมตร)</p>
+                                <p>• $x_2 = \text{เลขที่นักเรียน} + r$ โดย $r$ สุ่มระหว่าง 5–15 เมตร และระบบรับประกันว่า $x_2 \ne 30$</p>
                                 <p>• $M_1 = W_1 \times (x_1 - x_{fulcrum})$ (โมเมนต์ทวนเข็มนาฬิกา)</p>
                                 <p>• $M_2 = W_2 \times (x_2 - x_{fulcrum})$ (โมเมนต์ทวนเข็มนาฬิกา)</p>
                                 <p>• $\sum M_{\text{ทวนเข็ม}} = M_1 + M_2$</p>
@@ -708,7 +708,8 @@
                                class="cyber-input w-full p-2 sm:p-3 rounded-lg text-base sm:text-lg"
                                aria-required="true"
                                aria-describedby="studentIdHint">
-                        <p id="studentIdHint" class="text-xs mt-1" style="color: var(--cyber-text-dim);">ตำแหน่งของ W2 จะเท่ากับ เลขที่ + 10 เมตร</p>
+                        <p id="studentIdHint" class="text-xs mt-1" style="color: var(--cyber-text-dim);">ตำแหน่งของ W2 = เลขที่ + ค่าสุ่ม 5–15 เมตร (และจะไม่ทับจุดหมุน)</p>
+                        <div id="w2DynamicHint" class="mt-3 text-lg sm:text-2xl font-extrabold text-amber-900 bg-amber-100 border-2 border-amber-400 rounded-lg px-4 py-3 shadow-md tracking-wide text-center" style="display: none;"></div>
                     </div>
                     <div>
                         <label for="answerInput" class="block text-xs sm:text-sm font-medium mb-1" style="color: var(--cyber-text-bright); font-weight: 600;">
@@ -853,6 +854,11 @@
         let initialTime = 180;
         let soundsReady = false;
         let drawBeamTimeout = null; // สำหรับ debounce การวาด canvas
+        const STUDENT_ID_MIN = 1;
+        const STUDENT_ID_MAX = 45;
+        const W2_OFFSET_MIN = 5;   // เมตร
+        const W2_OFFSET_MAX = 15;  // เมตร (เพื่อไม่ให้เกินความยาวคาน)
+        let w2OffsetCache = {};
 
         // --- Tone.js Sound Synths ---
         let clickSnd, correctSnd, wrongSnd, tickSnd, gongSnd;
@@ -964,6 +970,7 @@
         const studentIdInput = document.getElementById('studentIdInput'); // กลับมาแล้ว
         const answerInput = document.getElementById('answerInput'); // กลับมาแล้ว
         const submitAnswerBtn = document.getElementById('submitAnswerBtn'); // กลับมาแล้ว
+        const w2DynamicHint = document.getElementById('w2DynamicHint');
 
         const studentCountSelect = document.getElementById('studentCount');
         const solutionInputsContainer = document.getElementById('solutionInputs');
@@ -980,6 +987,40 @@
             return parseFloat((Math.random() * (max - min) + min).toFixed(1));
         }
 
+        function generateW2Entry(studentID) {
+            const L = problemParams.L || 60;
+            const pivot = problemParams.x_pivot || 30;
+            let minOffset = W2_OFFSET_MIN;
+            let maxOffset = Math.min(W2_OFFSET_MAX, Math.floor(L - studentID));
+
+            if (maxOffset < minOffset) {
+                minOffset = 1;
+                maxOffset = Math.max(1, Math.floor(L - studentID));
+            }
+
+            let offset, position;
+            do {
+                offset = Math.floor(Math.random() * (maxOffset - minOffset + 1)) + minOffset;
+                position = studentID + offset;
+            } while (position === pivot);
+
+            return { offset, position };
+        }
+
+        function getW2Data(studentID) {
+            const id = parseInt(studentID, 10);
+            if (isNaN(id) || id < STUDENT_ID_MIN || id > STUDENT_ID_MAX) {
+                return null;
+            }
+            if (!problemParams.L) {
+                return null;
+            }
+            if (!w2OffsetCache[id]) {
+                w2OffsetCache[id] = generateW2Entry(id);
+            }
+            return w2OffsetCache[id];
+        }
+
         function calculateAnswer(studentID) {
             if (!problemParams.L || !studentID) {
                 return null;
@@ -987,7 +1028,11 @@
             const { x_pivot, xf, W1_val, x1, W2_val } = problemParams;
             const id = parseInt(studentID);
             const W1 = W1_val, W2 = W2_val;
-            const x2 = id + 10;
+            const w2Data = getW2Data(id);
+            if (!w2Data) {
+                return null;
+            }
+            const x2 = w2Data.position;
             const M1 = W1 * (x1 - x_pivot);
             const M2 = W2 * (x2 - x_pivot);
             const M_weights = M1 + M2;
@@ -1309,8 +1354,13 @@
                 problemStatement.innerHTML = '';
                 solutionInputsContainer.innerHTML = '';
                 solutionList.innerHTML = '';
+                w2OffsetCache = {};
                 if (typeof drawBeam === 'function') {
                     drawBeam(null);
+                }
+                if (w2DynamicHint) {
+                    w2DynamicHint.style.display = 'none';
+                    w2DynamicHint.textContent = '';
                 }
                 studentIdInput.value = '';
                 answerInput.value = '';
@@ -1339,12 +1389,17 @@
                 const xf = randomFloat(1.0, 10.0); // สุ่มตำแหน่ง F จาก 1-10
                 const x1 = randomFloat(30.1, 60.0);
                 problemParams = { L, x_pivot, xf, W1_val, x1, W2_val };
+                w2OffsetCache = {};
+                if (w2DynamicHint) {
+                    w2DynamicHint.style.display = 'none';
+                    w2DynamicHint.textContent = '';
+                }
 
                 // 2. แสดงโจทย์ (Text)
                 problemStatement.innerHTML = `
                     <p>คานสม่ำเสมอยาว <strong>${L.toFixed(0)} เมตร</strong> มีจุดหมุน (Fulcrum) อยู่ที่ระยะ <strong>${x_pivot.toFixed(0)} เมตร</strong></p>
                     <p>มีวัตถุ W1 ขนาด <strong>50 N</strong> วางอยู่ที่ตำแหน่ง <strong>${x1.toFixed(1)} เมตร</strong></p>
-                    <p>มีวัตถุ W2 ขนาด <strong>10 N</strong> วางอยู่ที่ตำแหน่ง <strong>(เลขที่นักเรียน + 10) เมตร</strong></p>
+                    <p>มีวัตถุ W2 ขนาด <strong>10 N</strong> วางอยู่ที่ตำแหน่ง <strong>(เลขที่นักเรียน + ค่าสุ่ม 5–15) เมตร</strong> พร้อมรับประกันว่าไม่ตรงกับ Fulcrum</p>
                     <p class="font-bold mt-2 text-slate-900">จงหาขนาดของแรงกด F (หน่วยเป็นนิวตัน) ที่ต้องกระทำ ณ ตำแหน่ง <strong>${xf.toFixed(1)} เมตร</strong></p>
                 `;
 
@@ -1470,12 +1525,14 @@
                 const li = document.createElement('li');
                 
                 if (id && !isNaN(parseInt(id))) {
+                    const w2Data = getW2Data(id);
                     const answer = calculateAnswer(id);
-                    if (answer && answer !== "Infinity") {
-                        const x2_pos = parseInt(id) + 10;
+                    if (answer && answer !== "Infinity" && w2Data) {
+                        const x2_pos = w2Data.position.toFixed(1).replace(/\.0$/, '');
+                        const offsetText = w2Data.offset ? ` (เลขที่ + ${w2Data.offset})` : '';
                         li.style.color = "var(--cyber-text-bright)";
                         li.style.fontWeight = "500";
-                        li.innerHTML = `<strong>เลขที่ ${id}:</strong> (W2 อยู่ที่ ${x2_pos}m) &rarr; คำตอบคือ <strong>${answer} N</strong>`;
+                        li.innerHTML = `<strong>เลขที่ ${id}:</strong> (W2 อยู่ที่ ${x2_pos}m${offsetText}) &rarr; คำตอบคือ <strong>${answer} N</strong>`;
                     } else {
                         li.style.color = "var(--cyber-red)";
                         li.style.fontStyle = "italic";
@@ -1494,24 +1551,37 @@
 
         // 6. นักเรียน: พิมพ์เลขที่ (Interactive) - ใช้ debounce เพื่อลดการวาดบ่อยเกินไป
         const debouncedDrawBeam = debounce((x2_pos) => {
-            if (x2_pos !== null && x2_pos !== undefined) {
-                const pos = parseInt(x2_pos);
-                if (!isNaN(pos) && pos >= 0 && pos <= 50) { // ตรวจสอบว่าเลขที่สมเหตุสมผล
-                    drawBeam(pos + 10);
-                } else {
-                    drawBeam(null);
-                }
+            if (typeof x2_pos === 'number' && !Number.isNaN(x2_pos) && x2_pos >= 0 && x2_pos <= (problemParams.L || 60)) {
+                drawBeam(x2_pos);
             } else {
                 drawBeam(null);
             }
         }, 150);
         
         studentIdInput.addEventListener('input', (e) => {
-            const id = e.target.value;
-            if (id && id.trim() !== '') {
-                debouncedDrawBeam(parseInt(id));
+            const id = e.target.value.trim();
+            if (id) {
+                const w2Data = getW2Data(id);
+                if (w2Data) {
+                    debouncedDrawBeam(w2Data.position);
+                    if (w2DynamicHint) {
+                        w2DynamicHint.style.display = 'block';
+                        const positionText = w2Data.position % 1 === 0 ? w2Data.position.toFixed(0) : w2Data.position.toFixed(2);
+                        w2DynamicHint.textContent = `เลขที่ ${id}: W2 อยู่ที่ ${positionText} เมตร (สุ่ม +${w2Data.offset} เมตร)`;
+                    }
+                } else {
+                    drawBeam(null);
+                    if (w2DynamicHint) {
+                        w2DynamicHint.style.display = 'none';
+                        w2DynamicHint.textContent = '';
+                    }
+                }
             } else {
                 drawBeam(null);
+                if (w2DynamicHint) {
+                    w2DynamicHint.style.display = 'none';
+                    w2DynamicHint.textContent = '';
+                }
             }
         });
 
@@ -1539,7 +1609,7 @@
 
             // ตรวจสอบว่าเลขที่เป็นตัวเลขที่ถูกต้อง
             const studentIdNum = parseInt(id);
-            if (isNaN(studentIdNum) || studentIdNum < 1 || studentIdNum > 50) {
+            if (isNaN(studentIdNum) || studentIdNum < STUDENT_ID_MIN || studentIdNum > STUDENT_ID_MAX) {
                 try {
                     if (soundsReady) wrongSnd.triggerAttackRelease("A2", 0.2);
                 } catch (error) {
@@ -1547,7 +1617,7 @@
                 }
                 const wrongMessage = document.getElementById('wrongMessage');
                 if (wrongMessage) {
-                    wrongMessage.textContent = "กรุณากรอกเลขที่ที่ถูกต้อง (1-50)";
+                    wrongMessage.textContent = "กรุณากรอกเลขที่ที่ถูกต้อง (1-45)";
                 }
                 showModal('wrongModal');
                 return;
